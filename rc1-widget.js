@@ -1,4 +1,12 @@
-(function({year, make, model}) {
+(function() {
+  const config = window.rootRc1WidgetConfig || {};
+
+  const ROOT_API_ENDPOINT = 'https://root.com/api/submit';
+  const VEHICLE = config.vehicle;
+  const THEME = config.theme || 'light';
+  const PID = config.pid;
+
+
   // Create and inject CSS
   const style = document.createElement('style');
   style.textContent = `
@@ -405,17 +413,17 @@
         <input
           type="hidden"
           name="year"
-          value=${year}
+          value=${VEHICLE.year}
         />
         <input
           type="hidden"
           name="make"
-          value=${make}
+          value=${VEHICLE.make}
         />
         <input
           type="hidden"
           name="model"
-          value=${model}
+          value=${VEHICLE.model}
         />
         <button>Get estimate now</button>
       </form>
@@ -423,8 +431,6 @@
   `;
 
   document.body.insertAdjacentHTML('beforeend', widgetHtml);
-
-  const ROOT_API_ENDPOINT = 'https://root.com/api/submit';
   
   // Handle form submission
   document.getElementById('root-rc1-form').addEventListener('submit', function(e) {
@@ -448,4 +454,4 @@
       alert('An error occurred. Please try again.');
     });
   });
-})({ year: 2022, make: 'Toyota', model: 'Camry' });
+})();
