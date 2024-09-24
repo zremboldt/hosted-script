@@ -6,6 +6,8 @@
   const THEME = config.theme || "light";
   const WRAPPER_STYLES = config.wrapperStyles || "";
   const PLACE_AFTER_ELEMENT = config.placeAfterElement;
+  const HEADLINE = config.headline;
+  const SUBHEAD = config.subhead;
   const PID = config.pid;
 
   // Create and inject CSS
@@ -99,6 +101,8 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      text-align: center;
       gap: 20px;
       padding: 20px;
       box-shadow: 0 6px 10px -2px hsl(0 0% 0% / 0.15);
@@ -118,6 +122,10 @@
         flex-direction: column;
         gap: var(--padding);
 
+        h2 {
+          font-size: 30px;
+        }
+
         p {
           max-width: 50ch;
           line-height: 1.5;
@@ -135,6 +143,8 @@
         font-size: 1rem;
         border: 1px solid var(--border);
         color: var(--text);
+        outline-width: 3px;
+        outline-color: hsl(var(--primary) / 0.6);
         anchor-name: --control;
       }
 
@@ -316,7 +326,7 @@
           padding: calc(var(--padding) * 1.25) 1rem;
           border-radius: var(--radius);
           width: 100%;
-          color: hsl(0, 0%, 30%);
+          color: hsl(var(--foreground) / 0.6);
         }
 
         select {
@@ -362,11 +372,8 @@
       <div id="root-rc1-widget" data-theme="${THEME}">
         <div class="accent"></div>
         <div class="text-container">
-          <h2>Protect your vehicle</h2>
-          <p>
-            Get an insurance estimate in seconds right here in the sidebar.
-            Provided by our trusted partner, Root.
-          </p>
+          <h2>${HEADLINE}</h2>
+          <p>${SUBHEAD}</p>
         </div>
 
         <button
@@ -487,6 +494,7 @@
             <input type="hidden" name="year" value="${VEHICLE.year}" />
             <input type="hidden" name="make" value="${VEHICLE.make}" />
             <input type="hidden" name="model" value="${VEHICLE.model}" />
+            <input type="hidden" name="pid" value="${PID}" />
             <button>Calculate</button>
           </form>
         </div>
