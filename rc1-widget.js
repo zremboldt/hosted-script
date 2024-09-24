@@ -493,9 +493,10 @@
   //   .querySelector(WIDGET_PLACEMENT)
   //   .insertAdjacentHTML("afterend", widgetHtml);
 
-  document
-    .querySelector(".sidebar-lead-form-container")
-    .insertAdjacentHTML("afterend", widgetHtml);
+  const el = document.querySelector(".sidebar-lead-form-container");
+  console.log("el: ", el);
+
+  el.insertAdjacentHTML("afterend", widgetHtml);
   // document.body.insertAdjacentHTML("beforeend", widgetHtml);
 
   // Handle form submission
