@@ -4,6 +4,7 @@
   const ROOT_API_ENDPOINT = "https://root.com/api/submit";
   const VEHICLE = config.vehicle;
   const THEME = config.theme || "light";
+  const WIDGET_PLACEMENT = config.widgetPlacement;
   const PID = config.pid;
 
   // Create and inject CSS
@@ -488,7 +489,10 @@
     </div>
   `;
 
-  document.body.insertAdjacentHTML("beforeend", widgetHtml);
+  document
+    .querySelector(WIDGET_PLACEMENT)
+    .insertAdjacentHTML("afterend", widgetHtml);
+  // document.body.insertAdjacentHTML("beforeend", widgetHtml);
 
   // Handle form submission
   document
