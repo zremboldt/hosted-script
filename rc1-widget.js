@@ -13,21 +13,19 @@
     #root-rc1-widget *:after,
     #root-rc1-widget *:before {
       box-sizing: border-box;
+      margin: 0;
     }
 
+    #root-rc1-widget,
     #root-rc1-widget[data-theme="light"] {
-      --overlay: hsl(0 0% 0% / 0.15);
       --background: 0 0% 100%;
       --foreground: 240 10% 4%;
       color-scheme: light only;
-      background: hsl(var(--background));
     }
     #root-rc1-widget[data-theme="dark"] {
-      --overlay: hsl(0 0% 100% / 0.23);
       --background: 240 10% 4%;
       --foreground: 60 9% 98%;
       color-scheme: dark only;
-      background: hsl(var(--background));
     }
 
     #root-rc1-widget {
@@ -36,8 +34,6 @@
       font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial,
         sans-serif, system-ui;
 
-      --padding: 0.675rem;
-      --radius: 6px;
       --ease: linear(
         0 0%,
         0.0036 9.62%,
@@ -83,41 +79,59 @@
       --ew: 320px;
       --eh: 266px;
 
+      --padding: 0.675rem;
+      --radius: 6px;
+      --speed: 0.35s;
+
       --border: color-mix(in lch, canvasText, transparent 90%);
       --hr: color-mix(in lch, canvas, canvasText 10%);
-      --speed: 0.35s;
-      --starting: color-mix(in lch, canvas, canvasText 20%);
+      --starting: color-mix(in lch, canvas, canvasText 8%);
       --text: canvasText;
       --primary: 19 100% 50%;
       --primary-foreground: 0 0% 98%;
-      /* --starting: hsl(var(--foreground)); */
     }
 
     #root-rc1-widget {
-      a,
-      button,
-      input {
-        outline-color: hsl(var(--foreground) / 0.2);
-      }
-      button {
-        cursor: pointer;
-      }
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+      box-shadow: 0 6px 10px -2px hsl(0 0% 0% / 0.15);
+      background-color: white;
+      border-radius: var(--radius);
+      overflow: hidden;
 
-      [popovertargetaction="close"] {
-        outline-offset: -0.875rem;
-      }
-
-      .get-quote {
+      .accent {
         position: absolute;
+        inset: 0;
+        height: 5px;
+        background-color: hsl(var(--primary));
+      }
+
+      .text-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--padding);
+
+        p {
+          max-width: 50ch;
+          line-height: 1.5;
+          color: hsl(0, 0%, 40%);
+        }
+      }
+
+      .get-quote-button {
         width: var(--sw);
         height: var(--sh);
         border-radius: calc(var(--sh) * 0.1);
         border: 0;
-        anchor-name: --control;
+        padding: 0;
         background: var(--starting);
         font-size: 1rem;
+        border: 1px solid var(--border);
         color: var(--text);
-        padding: 0;
+        anchor-name: --control;
       }
 
       /* The Popover */
@@ -211,21 +225,22 @@
         }
 
         button {
-          border-radius: var(--radius);
-          border: 0;
           position: absolute;
-          padding: 0;
           left: 0;
           top: 50%;
+          translate: calc(var(--ew) - (100%)) -50%;
           display: grid;
           place-items: center;
           justify-content: end;
+          padding: 0;
           padding-right: var(--padding);
-          cursor: pointer;
           width: 48px;
           height: 48px;
-          translate: calc(var(--ew) - (100%)) -50%;
           background: transparent;
+          cursor: pointer;
+          border: 0;
+          outline-color: hsl(var(--foreground) / 0.2);
+          outline-offset: -0.875rem;
         }
 
         svg {
@@ -290,20 +305,33 @@
           margin: 0;
         }
 
-        input {
+        input,
+        select {
+          outline-color: hsl(var(--foreground) / 0.2);
           border: 1px solid var(--border);
           padding: calc(var(--padding) * 1.25) 1rem;
           border-radius: var(--radius);
           width: 100%;
+          color: hsl(0, 0%, 30%);
+        }
+
+        select {
+          appearance: none;
+          background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-down"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>');
+          background-repeat: no-repeat;
+          background-position: right 8px center;
         }
 
         button {
           padding: calc(var(--padding) * 1.25) 1rem;
-          border-radius: var(--radius);
-          border: 0;
           background-color: hsl(var(--primary));
           color: hsl(var(--primary-foreground));
+          border-radius: var(--radius);
           font-weight: 500;
+          font-size: 15px;
+          cursor: pointer;
+          outline-color: hsl(var(--foreground) / 0.2);
+          border: 0;
         }
       }
 
@@ -326,9 +354,18 @@
 
   // Create and inject HTML
   const widgetHtml = `
-    <div id="root-rc1-widget" data-theme=${THEME}>
+    <div id="root-rc1-widget" data-theme="${THEME}">
+      <div class="accent"></div>
+      <div class="text-container">
+        <h2>Protect your vehicle</h2>
+        <p>
+          Get an insurance estimate in seconds right here in the sidebar.
+          Provided by our trusted partner, Root.
+        </p>
+      </div>
+
       <button
-        class="get-quote"
+        class="get-quote-button"
         popovertarget="disclose"
         popovertargetaction="toggle"
       >
@@ -380,17 +417,72 @@
             date-format="mm.dd.yyyy"
             autocomplete="bday"
           />
-          <input
-            type="text"
-            name="zip"
-            required="required"
-            placeholder="Zip code"
-            autocomplete="postal-code"
-          />
-          <input type="hidden" name="year" value=${VEHICLE.year} />
-          <input type="hidden" name="make" value=${VEHICLE.make} />
-          <input type="hidden" name="model" value=${VEHICLE.model} />
-          <button>Get estimate now</button>
+          <fieldset>
+            <select name="state" required="required">
+              <option value="" disabled selected>State</option>
+              <option value="AL">Alabama</option>
+              <option value="AK">Alaska</option>
+              <option value="AZ">Arizona</option>
+              <option value="AR">Arkansas</option>
+              <option value="CA">California</option>
+              <option value="CO">Colorado</option>
+              <option value="CT">Connecticut</option>
+              <option value="DE">Delaware</option>
+              <option value="FL">Florida</option>
+              <option value="GA">Georgia</option>
+              <option value="HI">Hawaii</option>
+              <option value="ID">Idaho</option>
+              <option value="IL">Illinois</option>
+              <option value="IN">Indiana</option>
+              <option value="IA">Iowa</option>
+              <option value="KS">Kansas</option>
+              <option value="KY">Kentucky</option>
+              <option value="LA">Louisiana</option>
+              <option value="ME">Maine</option>
+              <option value="MD">Maryland</option>
+              <option value="MA">Massachusetts</option>
+              <option value="MI">Michigan</option>
+              <option value="MN">Minnesota</option>
+              <option value="MS">Mississippi</option>
+              <option value="MO">Missouri</option>
+              <option value="MT">Montana</option>
+              <option value="NE">Nebraska</option>
+              <option value="NV">Nevada</option>
+              <option value="NH">New Hampshire</option>
+              <option value="NJ">New Jersey</option>
+              <option value="NM">New Mexico</option>
+              <option value="NY">New York</option>
+              <option value="NC">North Carolina</option>
+              <option value="ND">North Dakota</option>
+              <option value="OH">Ohio</option>
+              <option value="OK">Oklahoma</option>
+              <option value="OR">Oregon</option>
+              <option value="PA">Pennsylvania</option>
+              <option value="RI">Rhode Island</option>
+              <option value="SC">South Carolina</option>
+              <option value="SD">South Dakota</option>
+              <option value="TN">Tennessee</option>
+              <option value="TX">Texas</option>
+              <option value="UT">Utah</option>
+              <option value="VT">Vermont</option>
+              <option value="VA">Virginia</option>
+              <option value="WA">Washington</option>
+              <option value="WV">West Virginia</option>
+              <option value="WI">Wisconsin</option>
+              <option value="WY">Wyoming</option>
+            </select>
+            <input
+              type="text"
+              name="zip"
+              required="required"
+              placeholder="Zip code"
+              autocomplete="postal-code"
+            />
+          </fieldset>
+          <input type="hidden" name="year" value="${VEHICLE.year}" />
+          <input type="hidden" name="make" value="${VEHICLE.make}" />
+          <input type="hidden" name="model" value="${VEHICLE.model}" />
+          <button>Calculate</button>
         </form>
       </div>
     </div>
