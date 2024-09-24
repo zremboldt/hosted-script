@@ -3,18 +3,20 @@
 
   const ROOT_API_ENDPOINT = "https://root.com/api/submit";
   const VEHICLE = config.vehicle;
+  const PID = config.pid;
   const THEME = config.theme || "light";
   const WRAPPER_STYLES = config.wrapperStyles || "";
   const PLACE_AFTER_ELEMENT = config.placeAfterElement;
-  const HEADLINE = config.headline;
-  const SUBHEAD = config.subhead;
-  const PID = config.pid;
+  const HEADLINE = config.headline || "Protect your investment";
+  const SUBHEAD =
+    config.subhead ||
+    "Get an insurance estimate on this vehicle in seconds right here in the sidebar thanks to our chosen partner, Root Insurance.";
 
   // Create and inject CSS
   const style = document.createElement("style");
   style.textContent = `
     #root-rc1-wrap ${WRAPPER_STYLES}
-    
+
     #root-rc1-widget *,
     #root-rc1-widget *:after,
     #root-rc1-widget *:before {
@@ -26,11 +28,23 @@
     #root-rc1-widget[data-theme="light"] {
       --background: 0 0% 100%;
       --foreground: 240 10% 4%;
+      --card: 0 0% 100%;
+      --card-foreground: 240 10% 20%;
+      --starting: hsl(var(--primary));
+      --starting-cta-text: hsl(var(--primary-foreground));
+      --ending-cta-text: black;
+      --border: color-mix(in lch, canvasText, transparent 90%);
       color-scheme: light only;
     }
     #root-rc1-widget[data-theme="dark"] {
       --background: 240 10% 4%;
-      --foreground: 60 9% 98%;
+      --foreground: 60 8% 98%;
+      --card: 240 10% 8%;
+      --card-foreground: 240 8% 80%;
+      --starting: hsl(var(--primary));
+      --starting-cta-text: hsl(var(--primary-foreground));
+      --ending-cta-text: hsl(var(--primary-foreground));
+      --border: color-mix(in lch, canvasText, transparent 80%);
       color-scheme: dark only;
     }
 
@@ -89,9 +103,7 @@
       --radius: 6px;
       --speed: 0.35s;
 
-      --border: color-mix(in lch, canvasText, transparent 90%);
       --hr: color-mix(in lch, canvas, canvasText 10%);
-      --starting: color-mix(in lch, canvas, canvasText 8%);
       --text: canvasText;
       --primary: 19 100% 50%;
       --primary-foreground: 0 0% 98%;
@@ -106,7 +118,7 @@
       gap: 20px;
       padding: 20px;
       box-shadow: 0 6px 10px -2px hsl(0 0% 0% / 0.15);
-      background-color: white;
+      background-color: hsl(var(--card));
       border-radius: var(--radius);
       overflow: hidden;
 
@@ -124,12 +136,13 @@
 
         h2 {
           font-size: 30px;
+          color: hsl(var(--foreground));
         }
 
         p {
           max-width: 50ch;
           line-height: 1.5;
-          color: hsl(0, 0%, 40%);
+          color: hsl(var(--card-foreground));
         }
       }
 
@@ -139,10 +152,10 @@
         border-radius: calc(var(--sh) * 0.1);
         border: 0;
         padding: 0;
-        background: var(--starting);
+        background-color: var(--starting);
         font-size: 1rem;
-        border: 1px solid var(--border);
-        color: var(--text);
+        border: none;
+        color: white;
         outline-width: 3px;
         outline-color: hsl(var(--primary) / 0.6);
         anchor-name: --control;
@@ -173,7 +186,7 @@
           height: var(--eh);
           width: var(--ew);
           border-radius: var(--radius);
-          box-shadow: 0 0 0 1px var(--border), 0 10px 14px -4px hsl(0 0% 0% / 0.15);
+          box-shadow: 0 0 0 2px var(--border), 0 10px 14px -4px hsl(0 0% 0% / 0.15);
           background-color: canvas;
           color: canvasText;
           transition-duration: calc(2 * var(--speed));
@@ -208,6 +221,7 @@
         position: relative;
         transition: translate var(--speed);
         padding-inline: var(--padding);
+        color: var(--starting-cta-text);
       }
       #disclose header::after {
         content: "";
@@ -217,23 +231,29 @@
         left: 50%;
         opacity: 0;
         height: 1px;
-        background: var(--hr);
+        background: var(--border);
         translate: -50% -50%;
         transition: opacity var(--speed);
       }
       #disclose:popover-open header::after {
         opacity: 1;
       }
+      #disclose:popover-open header span {
+        color: var(--ending-cta-text);
+      }
       @starting-style {
         #disclose:popover-open header::after {
           opacity: 0;
+        }
+        #disclose:popover-open header span {
+          color: var(--starting-cta-text);
         }
       }
 
       header {
         span {
           transform-origin: 0 0;
-          transition: scale var(--speed), translate var(--speed);
+          transition: scale var(--speed), translate var(--speed), color var(--speed);
           display: flex;
           gap: var(--padding);
         }
@@ -491,6 +511,7 @@
                 autocomplete="postal-code"
               />
             </fieldset>
+            <input type="hidden" name="vin" value="${VEHICLE.vin}" />
             <input type="hidden" name="year" value="${VEHICLE.year}" />
             <input type="hidden" name="make" value="${VEHICLE.make}" />
             <input type="hidden" name="model" value="${VEHICLE.model}" />
