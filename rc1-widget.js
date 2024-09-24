@@ -4,6 +4,7 @@
   const ROOT_API_ENDPOINT = "https://root.com/api/submit";
   const VEHICLE = config.vehicle;
   const PID = config.pid;
+  const TOKEN = config.token;
   const THEME = config.theme || "light";
   const WRAPPER_STYLES = config.wrapperStyles || "";
   const PLACE_AFTER_ELEMENT = config.placeAfterElement;
@@ -515,7 +516,6 @@
             <input type="hidden" name="year" value="${VEHICLE.year}" />
             <input type="hidden" name="make" value="${VEHICLE.make}" />
             <input type="hidden" name="model" value="${VEHICLE.model}" />
-            <input type="hidden" name="pid" value="${PID}" />
             <button>Calculate</button>
           </form>
         </div>
@@ -527,28 +527,114 @@
     .querySelector(`${PLACE_AFTER_ELEMENT}`)
     .insertAdjacentHTML("afterend", widgetHtml);
 
+  async function getQuoteMonthly(
+    bearerToken,
+    pid,
+    firstName,
+    lastName,
+    dob,
+    state,
+    zip,
+    vin
+  ) {
+    const url = "http://localhost:3000/bind_api/v3/quoting/quote";
+    const policyholderId = crypto.randomUUID();
+    const data = {
+      agent: {
+        id: pid,
+      },
+      profile: {
+        address1: "1234 Dummy Rd",
+        city: "Somewhere",
+        customerConsentTimestamp: new Date().toISOString(),
+        drivers: [
+          {
+            dob: dob,
+            firstName: firstName,
+            id: policyholderId,
+            lastName: lastName,
+          },
+        ],
+        policyholderDriverId: policyholderId,
+        state: state,
+        vehicles: [
+          {
+            vin: vin,
+          },
+        ],
+        zip: zip,
+      },
+    };
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+      const json = await response.json();
+      const quote = await waitForQuote(bearerToken, json.quote.id);
+      const monthly = quote.monthlyTermPayments[0].totalAmountInDollars;
+      return monthly;
+    }
+    throw new Error(response.statusText);
+  }
+
+  async function waitForQuote(bearerToken, quoteId) {
+    const url = `http://localhost:3000/bind_api/v3/quoting/quote/${quoteId}`;
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    let count = 0;
+    while (count < 5) {
+      await delay(3000);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${bearerToken}`,
+          Accept: "application/json",
+        },
+      });
+      if (response.ok) {
+        const json = await response.json();
+        if (json.quote.status === "collecting_data") {
+          throw new Error("Not enough data!");
+        } else if (json.quote.status === "quoted") {
+          return json.quote;
+        }
+        ++count;
+      } else {
+        throw new Error(response.statusText);
+      }
+    }
+    throw new Error("Took too long to get a quote!");
+  }
+
   // Handle form submission
   document
     .getElementById("root-rc1-form")
-    .addEventListener("submit", function (e) {
+    .addEventListener("submit", async function (e) {
       e.preventDefault();
       const formData = new FormData(this);
 
-      fetch(ROOT_API_ENDPOINT, {
-        method: "POST",
-        body: formData,
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          alert("Form submitted successfully!");
-          console.log(data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          alert("An error occurred. Please try again.");
-        });
+      const { firstName, lastName, birthDate, state, zip, vin } =
+        Object.fromEntries(formData);
+
+      console.log(formData);
+      console.log(birthDate);
+
+      // const response = await getQuoteMonthly(
+      //   TOKEN,
+      //   PID,
+      //   firstName,
+      //   lastName,
+      //   "2000-02-01",
+      //   state,
+      //   zip,
+      //   vin
+      // )
+      //   .then((value) => showQuote(value))
+      //   .catch((error) => showError(error.message));
     });
 })();
