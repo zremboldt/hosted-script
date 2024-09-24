@@ -493,7 +493,10 @@
   //   .querySelector(WIDGET_PLACEMENT)
   //   .insertAdjacentHTML("afterend", widgetHtml);
 
+  const elConfig = document.querySelector(WIDGET_PLACEMENT);
   const el = document.querySelector(".sidebar-lead-form-container");
+  console.log("WIDGET_PLACEMENT: ", WIDGET_PLACEMENT);
+  console.log("elConfig: ", elConfig);
   console.log("el: ", el);
 
   el.insertAdjacentHTML("afterend", widgetHtml);
