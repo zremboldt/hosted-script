@@ -358,136 +358,138 @@
 
   // Create and inject HTML
   const widgetHtml = `
-    <div id="root-rc1-widget" data-theme="${THEME}">
-      <div class="accent"></div>
-      <div class="text-container">
-        <h2>Protect your vehicle</h2>
-        <p>
-          Get an insurance estimate in seconds right here in the sidebar.
-          Provided by our trusted partner, Root.
-        </p>
-      </div>
+    <div id="root-rc1-wrap">
+      <div id="root-rc1-widget" data-theme="${THEME}">
+        <div class="accent"></div>
+        <div class="text-container">
+          <h2>Protect your vehicle</h2>
+          <p>
+            Get an insurance estimate in seconds right here in the sidebar.
+            Provided by our trusted partner, Root.
+          </p>
+        </div>
 
-      <button
-        class="get-quote-button"
-        popovertarget="disclose"
-        popovertargetaction="toggle"
-      >
-        Get a quote
-      </button>
+        <button
+          class="get-quote-button"
+          popovertarget="disclose"
+          popovertargetaction="toggle"
+        >
+          Get a quote
+        </button>
 
-      <div popover="auto" id="disclose" class="disclosure">
-        <header>
-          <span>Get a quote</span>
-          <button popovertarget="disclose" popovertargetaction="close">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 18 18 6M6 6l12 12"
+        <div popover="auto" id="disclose" class="disclosure">
+          <header>
+            <span>Get a quote</span>
+            <button popovertarget="disclose" popovertargetaction="close">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </header>
+          <form id="root-rc1-form" class="form">
+            <fieldset>
+              <input
+                type="text"
+                name="firstName"
+                required="required"
+                placeholder="First name"
+                autocomplete="given-name"
               />
-            </svg>
-          </button>
-        </header>
-        <form id="root-rc1-form" class="form">
-          <fieldset>
+              <input
+                type="text"
+                name="lastName"
+                required="required"
+                placeholder="Last name"
+                autocomplete="family-name"
+              />
+            </fieldset>
             <input
-              type="text"
-              name="firstName"
+              type="date"
+              name="birthDate"
               required="required"
-              placeholder="First name"
-              autocomplete="given-name"
+              placeholder="mm.dd.yyyy"
+              date-format="mm.dd.yyyy"
+              autocomplete="bday"
             />
-            <input
-              type="text"
-              name="lastName"
-              required="required"
-              placeholder="Last name"
-              autocomplete="family-name"
-            />
-          </fieldset>
-          <input
-            type="date"
-            name="birthDate"
-            required="required"
-            placeholder="mm.dd.yyyy"
-            date-format="mm.dd.yyyy"
-            autocomplete="bday"
-          />
-          <fieldset>
-            <select name="state" required="required">
-              <option value="" disabled selected>State</option>
-              <option value="AL">Alabama</option>
-              <option value="AK">Alaska</option>
-              <option value="AZ">Arizona</option>
-              <option value="AR">Arkansas</option>
-              <option value="CA">California</option>
-              <option value="CO">Colorado</option>
-              <option value="CT">Connecticut</option>
-              <option value="DE">Delaware</option>
-              <option value="FL">Florida</option>
-              <option value="GA">Georgia</option>
-              <option value="HI">Hawaii</option>
-              <option value="ID">Idaho</option>
-              <option value="IL">Illinois</option>
-              <option value="IN">Indiana</option>
-              <option value="IA">Iowa</option>
-              <option value="KS">Kansas</option>
-              <option value="KY">Kentucky</option>
-              <option value="LA">Louisiana</option>
-              <option value="ME">Maine</option>
-              <option value="MD">Maryland</option>
-              <option value="MA">Massachusetts</option>
-              <option value="MI">Michigan</option>
-              <option value="MN">Minnesota</option>
-              <option value="MS">Mississippi</option>
-              <option value="MO">Missouri</option>
-              <option value="MT">Montana</option>
-              <option value="NE">Nebraska</option>
-              <option value="NV">Nevada</option>
-              <option value="NH">New Hampshire</option>
-              <option value="NJ">New Jersey</option>
-              <option value="NM">New Mexico</option>
-              <option value="NY">New York</option>
-              <option value="NC">North Carolina</option>
-              <option value="ND">North Dakota</option>
-              <option value="OH">Ohio</option>
-              <option value="OK">Oklahoma</option>
-              <option value="OR">Oregon</option>
-              <option value="PA">Pennsylvania</option>
-              <option value="RI">Rhode Island</option>
-              <option value="SC">South Carolina</option>
-              <option value="SD">South Dakota</option>
-              <option value="TN">Tennessee</option>
-              <option value="TX">Texas</option>
-              <option value="UT">Utah</option>
-              <option value="VT">Vermont</option>
-              <option value="VA">Virginia</option>
-              <option value="WA">Washington</option>
-              <option value="WV">West Virginia</option>
-              <option value="WI">Wisconsin</option>
-              <option value="WY">Wyoming</option>
-            </select>
-            <input
-              type="text"
-              name="zip"
-              required="required"
-              placeholder="Zip code"
-              autocomplete="postal-code"
-            />
-          </fieldset>
-          <input type="hidden" name="year" value="${VEHICLE.year}" />
-          <input type="hidden" name="make" value="${VEHICLE.make}" />
-          <input type="hidden" name="model" value="${VEHICLE.model}" />
-          <button>Calculate</button>
-        </form>
+            <fieldset>
+              <select name="state" required="required">
+                <option value="" disabled selected>State</option>
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <option value="AZ">Arizona</option>
+                <option value="AR">Arkansas</option>
+                <option value="CA">California</option>
+                <option value="CO">Colorado</option>
+                <option value="CT">Connecticut</option>
+                <option value="DE">Delaware</option>
+                <option value="FL">Florida</option>
+                <option value="GA">Georgia</option>
+                <option value="HI">Hawaii</option>
+                <option value="ID">Idaho</option>
+                <option value="IL">Illinois</option>
+                <option value="IN">Indiana</option>
+                <option value="IA">Iowa</option>
+                <option value="KS">Kansas</option>
+                <option value="KY">Kentucky</option>
+                <option value="LA">Louisiana</option>
+                <option value="ME">Maine</option>
+                <option value="MD">Maryland</option>
+                <option value="MA">Massachusetts</option>
+                <option value="MI">Michigan</option>
+                <option value="MN">Minnesota</option>
+                <option value="MS">Mississippi</option>
+                <option value="MO">Missouri</option>
+                <option value="MT">Montana</option>
+                <option value="NE">Nebraska</option>
+                <option value="NV">Nevada</option>
+                <option value="NH">New Hampshire</option>
+                <option value="NJ">New Jersey</option>
+                <option value="NM">New Mexico</option>
+                <option value="NY">New York</option>
+                <option value="NC">North Carolina</option>
+                <option value="ND">North Dakota</option>
+                <option value="OH">Ohio</option>
+                <option value="OK">Oklahoma</option>
+                <option value="OR">Oregon</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="RI">Rhode Island</option>
+                <option value="SC">South Carolina</option>
+                <option value="SD">South Dakota</option>
+                <option value="TN">Tennessee</option>
+                <option value="TX">Texas</option>
+                <option value="UT">Utah</option>
+                <option value="VT">Vermont</option>
+                <option value="VA">Virginia</option>
+                <option value="WA">Washington</option>
+                <option value="WV">West Virginia</option>
+                <option value="WI">Wisconsin</option>
+                <option value="WY">Wyoming</option>
+              </select>
+              <input
+                type="text"
+                name="zip"
+                required="required"
+                placeholder="Zip code"
+                autocomplete="postal-code"
+              />
+            </fieldset>
+            <input type="hidden" name="year" value="${VEHICLE.year}" />
+            <input type="hidden" name="make" value="${VEHICLE.make}" />
+            <input type="hidden" name="model" value="${VEHICLE.model}" />
+            <button>Calculate</button>
+          </form>
+        </div>
       </div>
     </div>
   `;
