@@ -4,7 +4,8 @@
   const ROOT_API_ENDPOINT = "https://root.com/api/submit";
   const VEHICLE = config.vehicle;
   const THEME = config.theme || "light";
-  const WIDGET_PLACEMENT = config.widgetPlacement;
+  const STYLE_OVERRIDES = config.styleOverrides || "";
+  const PLACE_AFTER_ELEMENT = config.placeAfterElement;
   const PID = config.pid;
 
   // Create and inject CSS
@@ -30,6 +31,7 @@
     }
 
     #root-rc1-widget {
+      ${STYLE_OVERRIDES}
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial,
@@ -490,16 +492,16 @@
   `;
 
   // document
-  //   .querySelector(WIDGET_PLACEMENT)
+  //   .querySelector(PLACE_AFTER_ELEMENT)
   //   .insertAdjacentHTML("afterend", widgetHtml);
 
-  const elConfig = document.querySelector(WIDGET_PLACEMENT);
-  const el = document.querySelector(".sidebar-lead-form-container");
-  console.log("WIDGET_PLACEMENT: ", WIDGET_PLACEMENT);
-  console.log("elConfig: ", elConfig);
-  console.log("el: ", el);
-
+  const el = document.querySelector(`${PLACE_AFTER_ELEMENT}`);
   el.insertAdjacentHTML("afterend", widgetHtml);
+
+  // console.log("PLACE_AFTER_ELEMENT: ", PLACE_AFTER_ELEMENT);
+  // console.log("elConfig: ", elConfig);
+  // console.log("el: ", el);
+
   // document.body.insertAdjacentHTML("beforeend", widgetHtml);
 
   // Handle form submission
