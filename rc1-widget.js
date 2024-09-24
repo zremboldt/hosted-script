@@ -4,13 +4,15 @@
   const ROOT_API_ENDPOINT = "https://root.com/api/submit";
   const VEHICLE = config.vehicle;
   const THEME = config.theme || "light";
-  const STYLE_OVERRIDES = config.styleOverrides || "";
+  const WRAPPER_STYLES = config.wrapperStyles || "";
   const PLACE_AFTER_ELEMENT = config.placeAfterElement;
   const PID = config.pid;
 
   // Create and inject CSS
   const style = document.createElement("style");
   style.textContent = `
+    #root-rc1-wrap ${WRAPPER_STYLES}
+    
     #root-rc1-widget *,
     #root-rc1-widget *:after,
     #root-rc1-widget *:before {
@@ -31,7 +33,6 @@
     }
 
     #root-rc1-widget {
-      ${STYLE_OVERRIDES}
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial,
@@ -80,7 +81,7 @@
       --sw: 160px;
       --sh: 48px;
       --ew: 320px;
-      --eh: 266px;
+      --eh: 270px;
 
       --padding: 0.675rem;
       --radius: 6px;
@@ -491,18 +492,9 @@
     </div>
   `;
 
-  // document
-  //   .querySelector(PLACE_AFTER_ELEMENT)
-  //   .insertAdjacentHTML("afterend", widgetHtml);
-
-  const el = document.querySelector(`${PLACE_AFTER_ELEMENT}`);
-  el.insertAdjacentHTML("afterend", widgetHtml);
-
-  // console.log("PLACE_AFTER_ELEMENT: ", PLACE_AFTER_ELEMENT);
-  // console.log("elConfig: ", elConfig);
-  // console.log("el: ", el);
-
-  // document.body.insertAdjacentHTML("beforeend", widgetHtml);
+  document
+    .querySelector(`${PLACE_AFTER_ELEMENT}`)
+    .insertAdjacentHTML("afterend", widgetHtml);
 
   // Handle form submission
   document
