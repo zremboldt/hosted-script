@@ -621,20 +621,17 @@
       const { firstName, lastName, birthDate, state, zip, vin } =
         Object.fromEntries(formData);
 
-      console.log(formData);
-      console.log(birthDate);
+      const response = await getQuoteMonthly(
+        TOKEN,
+        PID,
+        firstName,
+        lastName,
+        birthDate,
+        state,
+        zip,
+        vin
+      );
 
-      // const response = await getQuoteMonthly(
-      //   TOKEN,
-      //   PID,
-      //   firstName,
-      //   lastName,
-      //   "2000-02-01",
-      //   state,
-      //   zip,
-      //   vin
-      // )
-      //   .then((value) => showQuote(value))
-      //   .catch((error) => showError(error.message));
+      alert(`Your monthly payment is $${response}`);
     });
 })();
