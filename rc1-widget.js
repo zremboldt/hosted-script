@@ -489,8 +489,12 @@
     </div>
   `;
 
+  // document
+  //   .querySelector(WIDGET_PLACEMENT)
+  //   .insertAdjacentHTML("afterend", widgetHtml);
+
   document
-    .querySelector(WIDGET_PLACEMENT)
+    .querySelector(".sidebar-lead-form-container")
     .insertAdjacentHTML("afterend", widgetHtml);
   // document.body.insertAdjacentHTML("beforeend", widgetHtml);
 
