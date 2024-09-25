@@ -1,7 +1,7 @@
 (function () {
   const config = window.rootRc1WidgetConfig || {};
 
-  const ROOT_API_ENDPOINT = "https://root.com/api/submit";
+  const ROOT_API_ENDPOINT = "http://localhost:3000/bind_api/v3/quoting/quote";
   const VEHICLE = config.vehicle;
   const PID = config.pid;
   const TOKEN = config.token;
@@ -703,7 +703,7 @@
     zip,
     vin
   ) {
-    const url = "http://localhost:3000/bind_api/v3/quoting/quote";
+    const url = ROOT_API_ENDPOINT;
     const policyholderId = crypto.randomUUID();
     const data = {
       agent: {
@@ -750,7 +750,7 @@
   }
 
   async function waitForQuote(bearerToken, quoteId) {
-    const url = `http://localhost:3000/bind_api/v3/quoting/quote/${quoteId}`;
+    const url = `${ROOT_API_ENDPOINT}/${quoteId}`;
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     let count = 0;
     while (count < 5) {
