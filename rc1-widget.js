@@ -103,6 +103,7 @@
       --padding: 0.675rem;
       --radius: 6px;
       --speed: 0.35s;
+      --ease-out-quart: cubic-bezier(0.165, 0.85, 0.45, 1);
 
       --hr: color-mix(in lch, canvas, canvasText 10%);
       --text: canvasText;
@@ -156,10 +157,13 @@
         background-color: var(--starting);
         font-size: 1rem;
         border: none;
-        color: white;
-        outline-width: 3px;
-        outline-color: hsl(var(--primary) / 0.6);
+        color: var(--starting-cta-text);
         anchor-name: --control;
+        outline: none;
+
+        &:focus-visible {
+          outline: 4px solid hsl(var(--primary) / 0.25);
+        }
       }
 
       /* The Popover */
@@ -357,16 +361,42 @@
           background-position: right 8px center;
         }
 
-        button {
-          padding: calc(var(--padding) * 1.25) 1rem;
+        #calculate-button {
+          height: 46px;
+          overflow: hidden;
+          padding: 0px 20px;
           background-color: hsl(var(--primary));
-          color: hsl(var(--primary-foreground));
           border-radius: var(--radius);
-          font-weight: 500;
-          font-size: 15px;
           cursor: pointer;
-          outline-color: hsl(var(--foreground) / 0.2);
           border: 0;
+          outline: none;
+
+          &:focus-visible {
+            outline: 4px solid hsl(var(--primary) / 0.25);
+          }
+
+          span {
+            display: block;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: hsl(var(--primary-foreground));
+            font-weight: 500;
+            font-size: 15px;
+            transition: transform 300ms var(--ease-out-quart);
+          }
+
+          svg {
+            animation: spin 1s linear infinite;
+            stroke: hsl(var(--primary-foreground));
+          }
+
+          &.active span {
+            transform: translateY(-46px);
+            cursor: not-allowed;
+          }
         }
       }
 
@@ -382,6 +412,15 @@
           translate: -50% 2rem;
           filter: blur(4px);
         }
+      }
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
       }
     }
   `;
@@ -516,7 +555,26 @@
             <input type="hidden" name="year" value="${VEHICLE.year}" />
             <input type="hidden" name="make" value="${VEHICLE.make}" />
             <input type="hidden" name="model" value="${VEHICLE.model}" />
-            <button>Calculate</button>
+            <button id="calculate-button">
+              <span>Calculate</span>
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-loader-circle"
+                >
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+                Calculating
+              </span>
+            </button>
           </form>
         </div>
       </div>
@@ -616,6 +674,9 @@
     .getElementById("root-rc1-form")
     .addEventListener("submit", async function (e) {
       e.preventDefault();
+
+      document.querySelector("#calculate-button").classList.add("active");
+
       const formData = new FormData(this);
 
       const { firstName, lastName, birthDate, state, zip, vin } =
