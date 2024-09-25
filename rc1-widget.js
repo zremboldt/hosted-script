@@ -155,7 +155,7 @@
         border: 0;
         padding: 0;
         background-color: var(--starting);
-        font-size: 1rem;
+        font-size: 17px;
         border: none;
         color: var(--starting-cta-text);
         anchor-name: --control;
@@ -318,7 +318,7 @@
         translate: 0 0;
       }
 
-      .form {
+      #root-rc1-form {
         width: var(--ew);
         height: calc(var(--eh) - (48px - 0.875rem));
         padding: var(--padding);
@@ -327,13 +327,14 @@
         left: 50%;
         translate: -50% 2rem;
         font-size: 0.875rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--padding);
+        pointer-events: none;
         opacity: 0;
         filter: blur(4px);
         transition: translate var(--speed), opacity var(--speed),
           filter var(--speed);
-        display: flex;
-        flex-direction: column;
-        gap: var(--padding);
 
         fieldset {
           display: flex;
@@ -400,14 +401,107 @@
         }
       }
 
-      #disclose:popover-open .form {
+      #disclose:popover-open #root-rc1-form.active {
         opacity: 1;
         translate: -50% 0;
         filter: blur(0);
+        pointer-events: auto;
       }
 
       @starting-style {
-        #disclose:popover-open .form {
+        #disclose:popover-open #root-rc1-form.active {
+          opacity: 0;
+          translate: -50% 2rem;
+          filter: blur(4px);
+        }
+      }
+
+      #root-rc1-results {
+        width: var(--ew);
+        height: calc(var(--eh) - (48px - 0.875rem));
+        padding: var(--padding);
+        position: absolute;
+        top: calc(48px - 1rem);
+        left: 50%;
+        translate: -50% 2rem;
+        font-size: 0.875rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--padding);
+        text-align: left;
+        opacity: 0;
+        pointer-events: none;
+        filter: blur(4px);
+        transition: translate var(--speed), opacity var(--speed),
+          filter var(--speed);
+
+        .estimate {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+
+          h3 {
+            font-size: 1.1rem;
+            color: hsl(var(--foreground));
+          }
+
+          h1 {
+            font-size: 2.6rem;
+            line-height: 1;
+          }
+
+          p {
+            font-size: 1rem;
+            color: hsl(var(--foreground) / 0.7);
+          }
+        }
+
+        p {
+          font-size: 1rem;
+          color: hsl(var(--foreground) / 0.7);
+        }
+
+        a {
+          display: block;
+          width: 100%;
+        }
+
+        button {
+          background-color: hsl(var(--primary));
+          border-radius: var(--radius);
+          cursor: pointer;
+          border: 0;
+          outline: none;
+          color: hsl(var(--primary-foreground));
+          font-weight: 500;
+          font-size: 15px;
+          width: 100%;
+          height: 46px;
+
+          &:focus-visible {
+            outline: 4px solid hsl(var(--primary) / 0.25);
+          }
+        }
+
+        .disclaimer {
+          font-size: 13px;
+          color: hsl(var(--foreground) / 0.7);
+          text-wrap: pretty;
+          border-top: 1px solid var(--border);
+          padding-top: var(--padding);
+        }
+      }
+
+      #disclose:popover-open #root-rc1-results.active {
+        opacity: 1;
+        translate: -50% 0;
+        filter: blur(0);
+        pointer-events: auto;
+      }
+
+      @starting-style {
+        #disclose:popover-open #root-rc1-results.active {
           opacity: 0;
           translate: -50% 2rem;
           filter: blur(4px);
@@ -464,7 +558,7 @@
               </svg>
             </button>
           </header>
-          <form id="root-rc1-form" class="form">
+          <form id="root-rc1-form" class="active">
             <fieldset>
               <input
                 type="text"
@@ -576,6 +670,20 @@
               </span>
             </button>
           </form>
+          <!-- Add active class to reveal -->
+          <div id="root-rc1-results">
+            <section class="estimate">
+              <h3>Root Insurance Co.</h3>
+              <p>Estimated Monthly Premium<br />for your ${VEHICLE.year} ${VEHICLE.make} ${VEHICLE.model}</p>
+              <h1 class="price">$63.00</h1>
+            </section>
+            <p>Complete your quote on root.com</p>
+            <a
+              href="https://quote.partner-testing.root.com/quote/prefill/name?bridge_auth_id=gNdpXUxD8a9mAV50L7pdI4Ci"
+            >
+              <button>Continue</button>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -669,13 +777,18 @@
     throw new Error("Took too long to get a quote!");
   }
 
+  const calculateButton = document.querySelector("#calculate-button");
+  const rootRc1Form = document.querySelector("#root-rc1-form");
+  const rootRc1Results = document.querySelector("#root-rc1-results");
+  const priceElement = rootRc1Results.querySelector(".price");
+
   // Handle form submission
   document
     .getElementById("root-rc1-form")
     .addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      document.querySelector("#calculate-button").classList.add("active");
+      calculateButton.classList.add("active");
 
       const formData = new FormData(this);
 
@@ -693,6 +806,11 @@
         vin
       );
 
-      alert(`Your monthly payment is $${response}`);
+      console.log(parseInt(response).toFixed(2));
+      priceElement.textContent = `$${parseInt(response).toFixed(2)}`;
+
+      calculateButton.classList.remove("active");
+      rootRc1Form.classList.remove("active");
+      rootRc1Results.classList.add("active");
     });
 })();
